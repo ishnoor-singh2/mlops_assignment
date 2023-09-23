@@ -7,6 +7,14 @@ import utils
 # Load the digits dataset
 data, labels = utils.load_digits_data()
 
+### QUIZ ANSWERS
+# 2.1 Print the number of total samples in the dataset
+print(f"QUIZ ANSWER 2.1 ****Total samples in the dataset: {len(data)}")
+
+# 2.2 Print the size of the images in the dataset
+image_shape = data[0].reshape(int(len(data[0])**0.5), -1).shape
+print(f"QUIZ ANSWER 2.2 ****Size of the images in the dataset: {image_shape}")
+
 gamma_ranges = [0.001, 0.01, 0.1, 1, 10, 100]
 C_ranges = [0.1, 1, 2, 5, 10]
 list_of_all_param_combination_dictionaries = [{'gamma': gamma, 'C': c} for gamma, c in product(gamma_ranges, C_ranges)]
