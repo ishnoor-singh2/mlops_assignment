@@ -3,7 +3,7 @@ name: MLOps Assignment Workflow
 on:
   push:
     branches:
-      - feature/dummy
+      - feature/image_resize
 
 jobs:
   run-main-script:
