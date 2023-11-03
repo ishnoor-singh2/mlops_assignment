@@ -27,4 +27,4 @@ jobs:
       run: echo "***FOR MLOPS QUIZ***Running MLOps Assignment Workflow "
 
     - name: Run main script
-      run: python main.py
+      run: docker_run.sh
