@@ -25,7 +25,13 @@ cand_acc = accuracy_score(y_test, cand_pred)
 
 # Calculate confusion matrices
 conf_matrix_prod_cand = confusion_matrix(prod_pred, cand_pred)
-conf_matrix_correct_in_prod_not_cand = confusion_matrix((prod_pred == y_test).astype(int), (cand_pred != y_test).astype(int))
+
+# Creating a 2x2 confusion matrix for samples predicted correctly in production but not in candidate.
+true_positive = np.sum((prod_pred == y_test) & (cand_pred == y_test))
+false_positive = np.sum((prod_pred != y_test) & (cand_pred == y_test))
+false_negative = np.sum((prod_pred == y_test) & (cand_pred != y_test))
+true_negative = np.sum((prod_pred != y_test) & (cand_pred != y_test))
+conf_matrix_2x2 = np.array([[true_positive, false_positive], [false_negative, true_negative]])
 
 # Calculate macro-average F1 score
 f1_prod = f1_score(y_test, prod_pred, average='macro')
@@ -35,6 +41,6 @@ f1_cand = f1_score(y_test, cand_pred, average='macro')
 print("Production model's accuracy:", prod_acc)
 print("Candidate model's accuracy:", cand_acc)
 print("Confusion matrix between predictions of production and candidate models:\n", conf_matrix_prod_cand)
-print("Confusion matrix for samples predicted correctly in production but not in candidate:\n", conf_matrix_correct_in_prod_not_cand)
+print("2x2 Confusion Matrix (Rows: Production, Columns: Candidate):\n", conf_matrix_2x2)
 print("Production model macro-average F1 score:", f1_prod)
 print("Candidate model macro-average F1 score:", f1_cand)
