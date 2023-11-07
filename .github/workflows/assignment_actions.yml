@@ -3,7 +3,7 @@ name: MLOps Assignment Workflow
 on:
   push:
     branches:
-      - feature/dummy
+      - feature/quiz2
 
 jobs:
   run-main-script:
@@ -22,9 +22,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    # 3.  new print/echo statement in GitHub actions yaml file
     - name: Echo statement
-      run: echo "***FOR MLOPS QUIZ***Running MLOps Assignment Workflow "
+      run: echo "***FOR MLOPS QUIZ 2*** Running MLOps Workflow By ishnoor singh"
 
-    - name: Run main script
-      run: docker_run.sh
+

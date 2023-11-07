@@ -20,6 +20,9 @@ import matplotlib.pyplot as plt
 from sklearn import datasets, metrics, svm
 from sklearn.model_selection import train_test_split
 
+import joblib
+
+
 def split_train_dev_test(X, y, test_size=0.5, dev_size=0.25):
     """
     Splits data into train, dev, and test subsets.
@@ -97,3 +100,7 @@ print(
     "Classification report rebuilt from confusion matrix:\n"
     f"{metrics.classification_report(y_true, y_pred)}\n"
 )
+
+print("SAVING THE MODEL")
+# Save the model to disk
+joblib.dump(clf, 'digit_classifier.joblib')
