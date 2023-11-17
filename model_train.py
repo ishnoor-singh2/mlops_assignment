@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 # Import datasets, classifiers, and performance metrics
 from sklearn import datasets, metrics, svm
 from sklearn.model_selection import train_test_split
+import os
 import pickle
 
 def split_train_dev_test(X, y, test_size=0.5, dev_size=0.25):
@@ -99,7 +100,14 @@ print(
     f"{metrics.classification_report(y_true, y_pred)}\n"
 )
 
-with open("/app/models/model.pkl", "wb") as f:
+# Create the directory if it doesn't exist
+model_directory = "models"
+if not os.path.exists(model_directory):
+    os.makedirs(model_directory)
+
+# Save the model
+model_path = os.path.join(model_directory, "model.pkl")
+with open(model_path, "wb") as f:
     pickle.dump(clf, f)
 
-print("dumped model successfully")
+print("Dumped model successfully")

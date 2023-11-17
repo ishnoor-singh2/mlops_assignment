@@ -4,7 +4,7 @@ from PIL import Image
 import numpy as np
 
 
-clf = joblib.load('digit_classifier.joblib')  
+clf = joblib.load('models/model.pkl')  
 
 app = Flask(__name__)
 
@@ -45,4 +45,4 @@ def preprocess(image_file):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0',port = 80)

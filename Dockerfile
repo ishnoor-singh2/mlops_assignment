@@ -5,8 +5,9 @@ FROM python:3.8
 WORKDIR /app
 
 # Copy your model training script and any necessary files to the container
-COPY model_train.py /app/
+COPY app.py /app/
 COPY requirements.txt /app/
+COPY models/ /app/models/
 # COPY data/ /app/data/
 
 # Install any dependencies if needed
@@ -15,5 +16,8 @@ RUN pip install -r requirements.txt
 # Define a volume to save trained models on the host machine
 VOLUME /app/models
 
+# Expose port 80
+EXPOSE 80
+
 # Command to execute when the container runs
-CMD ["python", "model_train.py"]
+CMD ["python", "app.py"]
