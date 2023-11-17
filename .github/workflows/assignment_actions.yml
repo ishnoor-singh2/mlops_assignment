@@ -25,5 +25,5 @@ jobs:
     - name: Echo statement
       run: echo "***FOR MLOPS QUIZ 2*** Running MLOps Workflow By ishnoor singh"
 
-    - name: Run model evaluation script
-      run: python model_eval_quiz_2.py
+    - name: Run main script
+      run: docker_run.sh
