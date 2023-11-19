@@ -1,3 +1,12 @@
 image1.png
 image2.png
 digit_classifier.joblib
+main.py
+model_eval_quiz_2.py
+digits_images
+digit_check
+/.pytest_cache
+/__pycache__
+docker_run.sh
+Dockerfile
+models

@@ -10,13 +10,14 @@ hand-written digits, from 0-9.
 between the Python Standard Library's "code" module and your file named "code.py".
 """
 
-# Author: Gael Varoquaux <gael dot varoquaux at normalesup dot org>
-# License: BSD 3 clause
 
-# Standard scientific Python imports
 import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+from sklearn import datasets, metrics
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+import pickle
 
-# Import datasets, classifiers, and performance metrics
 from sklearn import datasets, metrics, svm
 from sklearn.model_selection import train_test_split
 import pickle
@@ -43,15 +44,9 @@ def predict_and_eval(model, X_test, y_test):
     )
     return predicted
 
+
 # Load the digits dataset
 digits = datasets.load_digits()
-
-# Visualize the first 4 images
-_, axes = plt.subplots(nrows=1, ncols=4, figsize=(10, 3))
-for ax, image, label in zip(axes, digits.images, digits.target):
-    ax.set_axis_off()
-    ax.imshow(image, cmap=plt.cm.gray_r, interpolation="nearest")
-    ax.set_title("Training: %i" % label)
 
 # Flatten the images for processing
 n_samples = len(digits.images)
@@ -60,23 +55,22 @@ data = digits.images.reshape((n_samples, -1))
 # Split data using the function
 X_train, X_dev, X_test, y_train, y_dev, y_test = split_train_dev_test(data, digits.target, test_size=0.2, dev_size=0.1)
 
-# Create and train a support vector classifier
-clf = svm.SVC(gamma=0.001)
+# Create and train a RandomForest classifier
+param_grid = {
+    'n_estimators': [50, 100, 200],
+    'max_depth': [None, 10, 20, 30],
+    'min_samples_split': [2, 5, 10]
+}
+clf = GridSearchCV(RandomForestClassifier(), param_grid, cv=5)
 clf.fit(X_train, y_train)
+
+print(f"Best parameters: {clf.best_params_}")
 
 # Predict and evaluate on dev data
 predicted_dev = predict_and_eval(clf, X_dev, y_dev)
 
 # Predict and evaluate on test data
 predicted_test = predict_and_eval(clf, X_test, y_test)
-
-# Visualize the first 4 test samples with their predictions
-_, axes = plt.subplots(nrows=1, ncols=4, figsize=(10, 3))
-for ax, image, prediction in zip(axes, X_test, predicted_test):
-    ax.set_axis_off()
-    image = image.reshape(8, 8)
-    ax.imshow(image, cmap=plt.cm.gray_r, interpolation="nearest")
-    ax.set_title(f"Prediction: {prediction}")
 
 # Display the confusion matrix
 disp = metrics.ConfusionMatrixDisplay.from_predictions(y_test, predicted_test)
@@ -85,21 +79,6 @@ print(f"Confusion matrix:\n{disp.confusion_matrix}")
 
 plt.show()
 
-# Additional step to rebuild classification report from confusion matrix
-y_true = []
-y_pred = []
-cm = disp.confusion_matrix
-for gt in range(len(cm)):
-    for pred in range(len(cm)):
-        y_true += [gt] * cm[gt][pred]
-        y_pred += [pred] * cm[gt][pred]
-
-print(
-    "Classification report rebuilt from confusion matrix:\n"
-    f"{metrics.classification_report(y_true, y_pred)}\n"
-)
-
-with open("models/model.pkl", "wb") as f:
-    pickle.dump(clf, f)
-
-print("dumped model successfully")
+# Save the model
+with open("models/random_forest_digit_classifier.pkl", "wb") as f:
+    pickle.dump(clf.best_estimator_, f)
