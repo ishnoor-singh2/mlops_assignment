@@ -1,0 +1,11 @@
+# Use the Dependency Image as the base image
+FROM m22aie233.azurecr.io/dependencyimage:latest
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy your application and test files
+COPY . /app/
+
+# Define a command to run pytest on your specific test file
+CMD ["pytest", "/app/test_model_loading.py"]

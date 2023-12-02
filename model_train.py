@@ -69,6 +69,15 @@ def train_and_evaluate_logistic_regression(X_train, y_train, X_test, y_test, sol
         print(f"Standard Deviation CV Score for '{solver}': {cv_scores.std()}\n")
 
 
+def train_and_evaluate_model(model, X_train, y_train, X_test, y_test, model_name):
+    """
+    Trains and evaluates the given model.
+    """
+    model.fit(X_train, y_train)
+    print(f"Evaluating model {model_name}")
+    predict_and_eval(model, X_test, y_test, model_name)
+
+
 # Load the digits dataset
 digits = datasets.load_digits()
 
@@ -92,16 +101,18 @@ X_train, X_dev, X_test, y_train, y_dev, y_test = split_train_dev_test(data_norma
 
 
 #For question2
-solvers = ['liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga']
-train_and_evaluate_logistic_regression(X_train, y_train, X_test, y_test, solvers)
+# solvers = ['liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga']
+# train_and_evaluate_logistic_regression(X_train, y_train, X_test, y_test, solvers)
 
 
-# # SVM Classifier
-# svm_clf = svm.SVC(gamma=0.001)
-# svm_clf.fit(X_train, y_train)
-# predict_and_eval(svm_clf, X_test, y_test, "svm_model")
 
-# # RF Classifier
-# rf_clf = RandomForestClassifier()
-# rf_clf.fit(X_train, y_train)
-# predict_and_eval(rf_clf, X_test, y_test, "rf_model")
+
+# Train and evaluate SVM Classifier
+svm_model = svm.SVC(gamma=0.001)
+train_and_evaluate_model(svm_model, X_train, y_train, X_test, y_test, "svm_model")
+
+# Train and evaluate Random Forest Classifier
+rf_model = RandomForestClassifier()
+train_and_evaluate_model(rf_model, X_train, y_train, X_test, y_test, "rf_model")
+
+

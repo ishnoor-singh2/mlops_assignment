@@ -1,0 +1,11 @@
+# python base image
+FROM python:3.8.1
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the requirements file to the container
+COPY requirements.txt /app/
+
+# Install any dependencies needed
+RUN pip install -r requirements.txt

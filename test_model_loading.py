@@ -1,3 +1,7 @@
+
+"""
+Code for question 3
+"""
 import os
 import joblib
 from sklearn.linear_model import LogisticRegression
