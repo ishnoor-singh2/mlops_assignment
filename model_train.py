@@ -3,15 +3,10 @@
 Recognizing hand-written digits
 ================================
 
-This example shows how scikit-learn can be used to recognize images of
-hand-written digits, from 0-9.
-
-# Changing the name from code.py to code_mlops_assignment.py to avoid naming conflict 
-between the Python Standard Library's "code" module and your file named "code.py".
+Code For Final Exam Of MLOPS , incorporates chnages
+question 1) , question 2) solved here
 """
 
-# Author: Gael Varoquaux <gael dot varoquaux at normalesup dot org>
-# License: BSD 3 clause
 
 # Standard scientific Python imports
 import matplotlib.pyplot as plt
@@ -20,6 +15,17 @@ import matplotlib.pyplot as plt
 from sklearn import datasets, metrics, svm
 from sklearn.model_selection import train_test_split
 import pickle
+from sklearn.ensemble import RandomForestClassifier
+
+#immport for question1
+from sklearn.preprocessing import Normalizer 
+#imports for question3
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import cross_val_score
+import joblib
+
+rollno = "m22aie233"
+
 
 def split_train_dev_test(X, y, test_size=0.5, dev_size=0.25):
     """
@@ -30,18 +36,38 @@ def split_train_dev_test(X, y, test_size=0.5, dev_size=0.25):
     X_train, X_dev, y_train, y_dev = train_test_split(X_train_dev, y_train_dev, test_size=dev_size, shuffle=True, stratify=y_train_dev)
     return X_train, X_dev, X_test, y_train, y_dev, y_test
 
-def predict_and_eval(model, X_test, y_test):
-    """
-    Predict using the model , evaluate the results and print report.
-
-    return: predictions
-    """
+def predict_and_eval(model, X_test, y_test, model_name):
     predicted = model.predict(X_test)
     print(
         f"Classification report for classifier {model}:\n"
         f"{metrics.classification_report(y_test, predicted)}\n"
     )
+    # Save the model
+    path_to_save = r"/Users/ishnoorsingh/Code/mlops_assignment/models/final_exam"
+    joblib.dump(model, f"{path_to_save}/{model_name}.joblib")
+    print(f"Model saved as {model_name}.joblib")
     return predicted
+
+def train_and_evaluate_logistic_regression(X_train, y_train, X_test, y_test, solvers):
+    rollno = "m22aie233"
+
+    for solver in solvers:
+        model = LogisticRegression(solver=solver, max_iter=1000)
+        model.fit(X_train, y_train)
+        print(f"Evaluating model with solver '{solver}'")
+        predict_and_eval(model, X_test, y_test, f"{rollno}_lr_{solver}")  # Add model_name here
+
+        # Save the model
+        model_save_path = r"/Users/ishnoorsingh/Code/mlops_assignment/models/final_exam"
+        model_filename = f"{model_save_path}/{rollno}_lr_{solver}.joblib"
+        joblib.dump(model, model_filename)
+        print(f"Model saved as {model_filename}")
+
+        # Bonus: Report mean and std of performance across 5 CV
+        cv_scores = cross_val_score(model, X_train, y_train, cv=5)
+        print(f"Mean CV Score for '{solver}': {cv_scores.mean()}")
+        print(f"Standard Deviation CV Score for '{solver}': {cv_scores.std()}\n")
+
 
 # Load the digits dataset
 digits = datasets.load_digits()
@@ -57,49 +83,25 @@ for ax, image, label in zip(axes, digits.images, digits.target):
 n_samples = len(digits.images)
 data = digits.images.reshape((n_samples, -1))
 
+# Apply unit normalization , for question 1)
+normalizer = Normalizer().fit(data)
+data_normalized = normalizer.transform(data)
+
 # Split data using the function
-X_train, X_dev, X_test, y_train, y_dev, y_test = split_train_dev_test(data, digits.target, test_size=0.2, dev_size=0.1)
+X_train, X_dev, X_test, y_train, y_dev, y_test = split_train_dev_test(data_normalized, digits.target, test_size=0.2, dev_size=0.1)
 
-# Create and train a support vector classifier
-clf = svm.SVC(gamma=0.001)
-clf.fit(X_train, y_train)
 
-# Predict and evaluate on dev data
-predicted_dev = predict_and_eval(clf, X_dev, y_dev)
+#For question2
+solvers = ['liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga']
+train_and_evaluate_logistic_regression(X_train, y_train, X_test, y_test, solvers)
 
-# Predict and evaluate on test data
-predicted_test = predict_and_eval(clf, X_test, y_test)
 
-# Visualize the first 4 test samples with their predictions
-_, axes = plt.subplots(nrows=1, ncols=4, figsize=(10, 3))
-for ax, image, prediction in zip(axes, X_test, predicted_test):
-    ax.set_axis_off()
-    image = image.reshape(8, 8)
-    ax.imshow(image, cmap=plt.cm.gray_r, interpolation="nearest")
-    ax.set_title(f"Prediction: {prediction}")
+# # SVM Classifier
+# svm_clf = svm.SVC(gamma=0.001)
+# svm_clf.fit(X_train, y_train)
+# predict_and_eval(svm_clf, X_test, y_test, "svm_model")
 
-# Display the confusion matrix
-disp = metrics.ConfusionMatrixDisplay.from_predictions(y_test, predicted_test)
-disp.figure_.suptitle("Confusion Matrix")
-print(f"Confusion matrix:\n{disp.confusion_matrix}")
-
-plt.show()
-
-# Additional step to rebuild classification report from confusion matrix
-y_true = []
-y_pred = []
-cm = disp.confusion_matrix
-for gt in range(len(cm)):
-    for pred in range(len(cm)):
-        y_true += [gt] * cm[gt][pred]
-        y_pred += [pred] * cm[gt][pred]
-
-print(
-    "Classification report rebuilt from confusion matrix:\n"
-    f"{metrics.classification_report(y_true, y_pred)}\n"
-)
-
-with open("/app/models/model.pkl", "wb") as f:
-    pickle.dump(clf, f)
-
-print("dumped model successfully")
+# # RF Classifier
+# rf_clf = RandomForestClassifier()
+# rf_clf.fit(X_train, y_train)
+# predict_and_eval(rf_clf, X_test, y_test, "rf_model")
