@@ -1,4 +1,4 @@
-# code for question 4
+# code for question 4,
 
 from flask import Flask, request, jsonify
 import joblib
@@ -16,7 +16,7 @@ def load_model(model_type):
     }
     return joblib.load(model_path[model_type])
 
-# Modified predict route to handle different models
+#predict route for different models
 @app.route('/predict/<model_type>', methods=['POST'])
 def predict(model_type):
     if model_type not in ['svm', 'lr', 'tree']:
@@ -27,11 +27,11 @@ def predict(model_type):
     image_files = request.files.getlist('images')
     if len(image_files) != 2:
         return jsonify({'error': 'Need two images for comparison'}), 400
-
+    #preprocess call
     image1_data = preprocess(image_files[0])
     image2_data = preprocess(image_files[1])
 
-    # Make predictions
+    # predictions call
     prediction1 = clf.predict([image1_data])[0]
     prediction2 = clf.predict([image2_data])[0]
 

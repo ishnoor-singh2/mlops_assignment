@@ -7,11 +7,9 @@ Code For Final Exam Of MLOPS , incorporates chnages
 question 1) , question 2) solved here
 """
 
-
-# Standard scientific Python imports
+#imports
 import matplotlib.pyplot as plt
 
-# Import datasets, classifiers, and performance metrics
 from sklearn import datasets, metrics, svm
 from sklearn.model_selection import train_test_split
 import pickle
@@ -63,7 +61,7 @@ def train_and_evaluate_logistic_regression(X_train, y_train, X_test, y_test, sol
         joblib.dump(model, model_filename)
         print(f"Model saved as {model_filename}")
 
-        # Bonus: Report mean and std of performance across 5 CV
+        ###### Part for Bonus question #####: Report mean and std of performance across 5 CV
         cv_scores = cross_val_score(model, X_train, y_train, cv=5)
         print(f"Mean CV Score for '{solver}': {cv_scores.mean()}")
         print(f"Standard Deviation CV Score for '{solver}': {cv_scores.std()}\n")
@@ -100,9 +98,9 @@ data_normalized = normalizer.transform(data)
 X_train, X_dev, X_test, y_train, y_dev, y_test = split_train_dev_test(data_normalized, digits.target, test_size=0.2, dev_size=0.1)
 
 
-#For question2
-# solvers = ['liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga']
-# train_and_evaluate_logistic_regression(X_train, y_train, X_test, y_test, solvers)
+# For question2
+solvers = ['liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga']
+train_and_evaluate_logistic_regression(X_train, y_train, X_test, y_test, solvers)
 
 
 

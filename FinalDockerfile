@@ -7,5 +7,5 @@ WORKDIR /app
 # Copy your application and test files
 COPY . /app/
 
-# Define a command to run pytest on your specific test file
+# cmd to run pytest
 CMD ["pytest", "/app/test_model_loading.py"]
